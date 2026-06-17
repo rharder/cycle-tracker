@@ -99,6 +99,42 @@ html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-syste
   .month-title{color:#f0f0f0}
   .sync-bar{background:#1a2a3a;color:#7ab4f5}
 }
+
+.help-btn{position:fixed;bottom:24px;right:16px;width:42px;height:42px;border-radius:50%;background:#fff;border:1px solid #ddd;font-size:20px;font-weight:600;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.12);z-index:100;-webkit-tap-highlight-color:transparent}
+.help-btn:active{background:#f5f5f5}
+.help-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:flex-end}
+.help-overlay.open{display:flex}
+.help-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.help-sheet-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 0}
+.help-sheet-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px}
+.help-sheet-title{font-size:17px;font-weight:600;color:#111}
+.help-close{width:30px;height:30px;border-radius:50%;border:none;background:#f0f0f0;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#666;-webkit-tap-highlight-color:transparent}
+.help-body{overflow-y:auto;padding:4px 20px 40px;-webkit-overflow-scrolling:touch}
+.help-body h2{font-size:17px;font-weight:600;color:#111;margin:1.25rem 0 0.5rem}
+.help-body h2:first-child{margin-top:0}
+.help-body h3{font-size:15px;font-weight:600;color:#111;margin:1rem 0 0.35rem}
+.help-body p{font-size:14px;color:#444;line-height:1.6;margin-bottom:0.6rem}
+.help-body ul,.help-body ol{font-size:14px;color:#444;line-height:1.7;padding-left:1.4rem;margin-bottom:0.6rem}
+.help-body li{margin-bottom:0.2rem}
+.help-body table{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:0.75rem}
+.help-body th{text-align:left;font-weight:600;color:#111;padding:6px 8px;border-bottom:1px solid #eee}
+.help-body td{padding:6px 8px;border-bottom:1px solid #f5f5f5;color:#444}
+.help-body a{color:#1a4ba1}
+.help-body .priv-box{background:#f0f7ff;border-radius:10px;padding:12px 14px;margin:0.75rem 0}
+.help-body .priv-box p{color:#1a4ba1;margin:0;font-size:13px}
+@media(prefers-color-scheme:dark){
+  .help-btn{background:#2c2c2e;border-color:#444;color:#aaa;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+  .help-sheet{background:#1c1c1e}
+  .help-sheet-handle{background:#444}
+  .help-sheet-title{color:#f0f0f0}
+  .help-close{background:#3a3a3c;color:#aaa}
+  .help-body h2,.help-body h3{color:#f0f0f0}
+  .help-body p,.help-body ul,.help-body ol,.help-body li,.help-body td{color:#ccc}
+  .help-body th{color:#f0f0f0;border-color:#333}
+  .help-body td{border-color:#2c2c2c}
+  .help-body .priv-box{background:#1a2a3a}
+  .help-body .priv-box p{color:#7ab4f5}
+}
 </style>
 </head>
 <body>
@@ -212,7 +248,7 @@ html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-syste
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────────────
 // Replace with your OAuth Client ID after creating it in Google Cloud Console
-const GOOGLE_CLIENT_ID = '472211869359-f7srsu0l1cp3vdm3v30q8k61fqcsmmcp.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
 const DRIVE_FILE_NAME  = 'cycle-tracker-data.json';
 const DRIVE_SCOPE      = 'https://www.googleapis.com/auth/drive.file';
 const STORE_KEY        = 'cycle_tracker_v2';
@@ -652,6 +688,78 @@ function showDriveMsg(msg,type){
 }
 
 renderCalendar();
+
+function openHelp(){document.getElementById('help-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeHelp(){document.getElementById('help-overlay').classList.remove('open');document.body.style.overflow='';}
+function closeHelpIfBg(e){if(e.target===document.getElementById('help-overlay'))closeHelp();}
+
 </script>
+
+<button class="help-btn" onclick="openHelp()" aria-label="Help">?</button>
+
+<div class="help-overlay" id="help-overlay" onclick="closeHelpIfBg(event)">
+  <div class="help-sheet" id="help-sheet">
+    <div class="help-sheet-handle"></div>
+    <div class="help-sheet-header">
+      <div class="help-sheet-title">About Cycle Tracker</div>
+      <button class="help-close" onclick="closeHelp()">&#x2715;</button>
+    </div>
+    <div class="help-body">
+
+      <h2>What it does</h2>
+      <p>Cycle Tracker logs menstrual periods and visualizes the four phases of the cycle across several months. As you log more cycles, the app automatically calculates your actual average cycle length and adjusts predictions to match.</p>
+
+      <table>
+        <tr><th>Color</th><th>Phase</th><th>Typical length</th></tr>
+        <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#F0997B;vertical-align:-2px;margin-right:5px"></span>Coral</td><td>Menstrual</td><td>~5 days</td></tr>
+        <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9FE1CB;vertical-align:-2px;margin-right:5px"></span>Teal</td><td>Follicular</td><td>~9 days</td></tr>
+        <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#AFA9EC;vertical-align:-2px;margin-right:5px"></span>Purple</td><td>Ovulation</td><td>~3 days</td></tr>
+        <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#FAC775;vertical-align:-2px;margin-right:5px"></span>Amber</td><td>Luteal</td><td>~11 days</td></tr>
+      </table>
+
+      <h2>How to use it</h2>
+
+      <h3>Add to your iPhone home screen</h3>
+      <ol>
+        <li>Open the app in <strong>Safari</strong></li>
+        <li>Tap the <strong>Share</strong> button (box with arrow at the bottom)</li>
+        <li>Tap <strong>Add to Home Screen</strong></li>
+        <li>Tap <strong>Add</strong></li>
+      </ol>
+
+      <h3>Logging periods</h3>
+      <p>Tap any day on the calendar to open a menu. From there you can:</p>
+      <ul>
+        <li>Log that day as a period start</li>
+        <li>Set it as the end of an open period</li>
+        <li>Update the end date of a nearby logged period</li>
+        <li>Remove a period entry</li>
+      </ul>
+      <p>You can also log periods manually in the <strong>Log</strong> tab.</p>
+
+      <h3>Cycle length calculation</h3>
+      <p>After 3 or more periods are logged, the app calculates your actual average cycle length automatically. The <strong>cycle days</strong> stat card will show a blue <em>calculated</em> badge when this is active.</p>
+
+      <h2>Syncing between devices</h2>
+      <p>By default, data is stored only in your browser on that device. To sync across devices, go to <strong>Settings → Sign in with Google</strong>. Your data will be saved to a file called <code>cycle-tracker-data.json</code> in your own Google Drive.</p>
+
+      <h2>Backing up your data</h2>
+      <p>Go to <strong>Settings → Export JSON</strong> to download a backup. You can re-import it on any device using <strong>Settings → Import JSON</strong>.</p>
+
+      <h2>Privacy</h2>
+      <div class="priv-box"><p>&#x1F512; Your data never leaves your device unless you choose to enable Google Drive sync.</p></div>
+      <ul>
+        <li><strong>No server.</strong> The app is a single HTML file — there is no backend.</li>
+        <li><strong>No analytics.</strong> No tracking, no cookies, no telemetry of any kind.</li>
+        <li><strong>No account required.</strong> You never sign up for anything.</li>
+        <li><strong>Data stays on your device.</strong> Period data is stored in your browser's local storage and never transmitted anywhere.</li>
+        <li><strong>Google Drive sync is optional.</strong> If you use it, your data goes to <em>your</em> Google Drive. The app developer cannot see it.</li>
+        <li><strong>Open source.</strong> Every line of code is visible at <a href="https://github.com/rharder/cycle-tracker" target="_blank">github.com/rharder/cycle-tracker</a>.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
