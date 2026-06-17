@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Cycle Tracker">
+<title>Cycle Tracker</title>
+<link rel="apple-touch-icon" sizes="1024x1024" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAGUElEQVR4nO3dv24UZxSG8bPINEiWQpXKliIX6VLlIpBooIjr3ECqCFFwBRS5ADrqNNAgIXIBpMgNpEjjVK6MFMmFKTZFGGc8Ozv7zcz39z3PT0pDQjyGx6/P2khsPr16YRXZhv6Hbx49SfgYmGlT+gE69wq+7e3IP8Gevn+b4JGw0Krfy5iOMr+9Yu8osuv/Xmdb8FwLneSjlpVuRrbVTrnQrDGGkq92qoXOFjMr3awkjcReaFYZc3S9RFvrmAtdLGZWunnR2omx0KwyYoiy1msXupqYWWkZq5paE3Q1MUPO4raWBl1lzKy0lEWNLQm6ypghaXZrc4OuPmZWWs6s5uYEXX3MkBXcXmjQTcXMSksKajAk6KZihrSDLZb889BJsdI+HQqadUZtJpucCrr5mFlpWXvblD054NO+oJtf5w4rLWu00bGgZWKGvJ1WOTkgxUXQnB1+DIPm3EBr7jTrYqHNWGkv+kGzzmjVbbtuFtqMlfbAVdDQ1wXt5txgpWVtzVhoiHEZNCuty2XQ0OU2aFZa0z1z9IIQ8rZuF9qMlVbkOmjocR80K63FfdDQQtDGSishaEgh6C9YaQ0EDSkE3cNKty/3X43szo+n3/81/LHXF3+clXgWDzafXr3gW98Dbx49Wf3/GAt5iLDjY6EjOz8+sQcPvz4Ys9l/0V9fXZ79+s/fqR/LDRZ6j5CVPj8+2fmx0Jj7rq8ud5aayJdhoWcaizj12yHucAQdKCTkJevc/byxlR6+bcI+jKD3ePr+rd3/4afSj3EHq30YQY+oLeQxrPY4vrEy0ELMfblu+law0F+0FnIfa/0/FtrixTz1wi7FzxtirQm66WUe4z1qtydHqpCvry7P5nz5LtY693k+QVwudOpVDo00Rcx9HtfaXdC5Tozrq8uzfcFO/bvYvEXt6uQocS/nCnfK+fGJm/PDzUKrvfiby8tSuwjae8wdD1G7CBp+yAfNOt+lvtLSQRPzOOWoZYMm5mmqUcsGDZ8kg2adwyiutFzQxDyPWtRyQcM3qaBZ52WUVloqaICgIUUmaM6NdVTODpmgATORoFnnOBRWWiJooEPQkNJ80JwbcbV+djQfNNBH0JBC0JBC0JDSdNC8IEyj5ReGTQcNDBE0pBA0pBA0pBA0pBw9+O6m9DMs9rn0Awj76vdvSj/CIiw0pBA0pBA0pBA0pBA0pBA0pDQd9P0/fyn9CJI+/Nbu3yXVdNDAEEFDCkFDCkFDSvNB88IwrpZfEJoJBA30ETSkSATN2RFH6+eGmUjQQEcmaFZ6HYV1NhMKGjAjaIiRCpqzYxmVc8NMLGhALmhWeh6ldTYTDNqMqEOpxWwmGjT8kg2alZ6muM5mwkGbEfU+qjGbiQdtRtRD6r8e8kFj1+PTl6UfIRkXQauvUqj+r4Nq1C6CNiPqsfdfMerNzcdn29IPkdPnb38u/QjZhXwwv7t4nuFJ0nOz0B1vSx36/qqstbugzfxEPff9VIja3ckxpHiCrP2Abfn8cB+0mVbUMT/7tBi2y5NjSOUEif1+tHiCsNADLa516g/IlpaahR5oba1zPG9LS81CT6h5rUt94NW+1gQdqIa4a/nsUXPUBD1TibBrCbmv1qgJeoWUcdcY8VCNURN0ZEsibyHeKTWFTdCIopao+bIdoqjlS3sEjWhqiJqTA0mUOkFYaCRRaq0JGsmUiJqgkVTuqLmhkU2Ou5qFRjY51pqgkVXqqAka2aWMenPz8ZmZGXc0ioh8V29YaBQVe60JGsXFjJqgUYVYUXNDozor7urbG3oT6VmA1Rau9caMkwOVWnqCEDSqtSTq7obucEujSgfu6tuTmYVGE0LXehg0Lw5RrT1R32l2eHKYcXagAb0T5E7QnBxo0r4TZCxozg404fHpy51W9y00UaN2G7PdpR67oTvc0qjZzui+u3g+GbQZUaNOey+IQy8KOT1Qm8km+SoHpIQEzUqjFgdbDF1ookZpQQ3OOTmIGqUEtzf3hiZq5DaruSUvCokaucxubelXOYgaqS1qbM2X7YgaqSxua+3XoYkasa1q6ijiA/BtcqwRZRxjfqeQtcZS0dqJsdB9rDXmiD6Cqf4sB2uNQ5I0Enuh+/oPzGLDLMPQpQy6j1PEt2yfsXMF3WG1/ShyduYOum/sHSbyNlXzmulfDpmk30AI9Q0AAAAASUVORK5CYII=">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABN0lEQVR4nGP8MLOaAQv4D2Os9wjAJk8uYEQXYMJi8X9kgcAdG6jpAAzzmdAk6QXgdjGhC9DbEehRgBVQORpQABPDwPgeBv4TFQIMDLQLBRZKNCfImdyFsRc8OqNMjhlEhwADA2ooIFuOjU8TB9ACkBwFYbyyBOVWfX5MtHkkhQBraC6c/e39S5Q4R+bjcyQ6IDoEkC3H5QhkEMYrS1RIDHgaIMoB2HxPDCAmKgY8BFi49H4RVPSbAgsETijilR/wEBgaDmC92UuW4bt2E87lQyMEGBhIDwVi1ZNWFBNpKEydt1wnQbWMv46XktUi+q1ejNNibGDro3LqOoAcgM0RdE2E2KKE7rkA3RGMv46XMjAMUMt466NyxoF0ACMDAyIKMDqN9ALIaYBejmBEtgs9EaJI0shyFAAABE9TwibFjsQAAAAASUVORK5CYII=">
+<link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAuUlEQVR4nGP8MLOaAQr+MzAwMKz3CGAgAjDCGEzImkkA/2F6mNA1B+7YQJJBLPhkE+RM7sLYCx6dUcamhgmbYOCODSia0Q0jaAApgDYGsIbmMnx7/xLFz9/ev1QO45XFUMvCpfcLQ/A3kiZ0OYETioRdQArA7oWbvVgV79qNGeuMv46X4kyFv9WLsRq69VE5cQbgAzBDmBiQMgYpwFuuk4GBgYGR8dfxUgYG0jMTDDDCApFUVzDC9AAA2M81zr1SAKgAAAAASUVORK5CYII=">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{padding:0.75rem 12px 3rem;width:100%;max-width:480px;margin:0 auto}
+.tabs{display:flex;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;margin-bottom:1.25rem}
+.tab{flex:1;padding:12px 4px;border:none;border-right:1px solid #e0e0e0;background:transparent;font-size:15px;cursor:pointer;color:#888;text-align:center;-webkit-tap-highlight-color:transparent}
+.tab:last-child{border-right:none}
+.tab.active{background:#f5f5f5;color:#111;font-weight:500}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.1rem}
+.stat{background:#f5f5f5;border-radius:10px;padding:12px 6px;text-align:center}
+.stat .sv{font-size:26px;font-weight:500;color:#111}
+.stat .sl{font-size:12px;color:#888;margin-top:3px;line-height:1.3}
+.stat .badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 6px;border-radius:20px;margin-top:4px;line-height:1.4}
+.badge-calc{background:#B5D4F4;color:#0C447C}
+.badge-manual{background:#D3D1C7;color:#444}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1.25rem}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:14px;color:#888}
+.leg-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.month-block{margin-bottom:1.75rem}
+.month-title{font-size:18px;font-weight:500;color:#111;margin-bottom:10px}
+.cal-heads{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;width:100%}
+.cal-head{font-size:13px;font-weight:500;color:#888;text-align:center;padding:2px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:100%}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;width:100%}
+.cal-day:active{opacity:0.7}
+.cal-day.empty{cursor:default;background:transparent!important}
+.cal-day span{font-size:clamp(13px,3.5vw,18px);font-weight:500;line-height:1;pointer-events:none}
+.modal-wrap{display:none;margin:0.75rem 0 1rem}
+.modal-wrap.open{display:block}
+.modal{background:#fff;border:1px solid #ddd;border-radius:14px;padding:1.25rem}
+.modal-date{font-size:17px;font-weight:500;color:#111;margin-bottom:3px}
+.modal-sub{font-size:14px;color:#888;margin-bottom:1rem}
+.modal-btns{display:flex;flex-direction:column;gap:8px}
+.mbtn{width:100%;padding:14px 16px;border-radius:10px;border:1px solid #ddd;background:transparent;font-size:15px;cursor:pointer;color:#111;text-align:left;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:10px}
+.mbtn:active{background:#f5f5f5}
+.mbtn-cancel{color:#888;border-color:#eee;justify-content:center}
+.section{background:#fff;border:1px solid #eee;border-radius:14px;padding:1.25rem;margin-bottom:1rem}
+.sec-title{font-size:16px;font-weight:500;color:#111;margin-bottom:1rem}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:14px;color:#888;margin-bottom:6px}
+.field input[type=date]{width:100%;border:1px solid #ddd;border-radius:10px;padding:13px 14px;font-size:16px;background:#fff;color:#111}
+.field-row{display:flex;align-items:center;gap:10px}
+.field-row input[type=number]{width:80px;padding:13px 14px;font-size:16px;border:1px solid #ddd;border-radius:10px;background:#fff;color:#111}
+.field-row .unit{font-size:15px;color:#888}
+.hint{font-size:13px;color:#888;margin-top:8px;line-height:1.5}
+.big-btn{width:100%;padding:15px;border-radius:10px;border:1px solid #ddd;background:#f5f5f5;font-size:16px;font-weight:500;cursor:pointer;color:#111;margin-top:0.5rem;-webkit-tap-highlight-color:transparent}
+.log-item{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid #eee;font-size:15px;color:#111}
+.log-item:last-child{border-bottom:none}
+.del{color:#aaa;cursor:pointer;padding:4px 8px;font-size:22px;-webkit-tap-highlight-color:transparent}
+.empty{color:#aaa;font-size:15px;padding:8px 0}
+.msg{font-size:14px;padding:12px;border-radius:10px;margin-top:10px}
+.msg.ok{background:#EAF3DE;color:#3B6D11}
+.msg.err{background:#FCEBEB;color:#A32D2D}
+.msg.info{background:#E8F0FE;color:#1a4ba1}
+.io-row{display:flex;gap:8px;margin-top:0.5rem}
+.io-btn{flex:1;padding:13px;border-radius:10px;border:1px solid #ddd;background:#f5f5f5;font-size:15px;font-weight:500;cursor:pointer;color:#111;text-align:center;-webkit-tap-highlight-color:transparent}
+.io-btn:active{background:#e8e8e8}
+.io-btn.danger{background:#FFF0F0;border-color:#f5c6c6;color:#A32D2D}
+.sync-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f0f7ff;border-radius:10px;margin-bottom:1rem;font-size:13px;color:#1a4ba1}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0}
+.sync-dot.off{background:#aaa}
+.sync-dot.busy{background:#FF9800;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.gdrive-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:10px;border:1px solid #ddd;background:#fff;font-size:15px;font-weight:500;cursor:pointer;color:#444;-webkit-tap-highlight-color:transparent;margin-top:0.5rem}
+.gdrive-btn:active{background:#f5f5f5}
+.gdrive-logo{width:18px;height:18px;flex-shrink:0}
+@media (prefers-color-scheme:dark){
+  html,body{background:#1c1c1e}
+  .app{color:#f0f0f0}
+  .tab{color:#888;border-color:#333}
+  .tab.active{background:#2c2c2e;color:#f0f0f0}
+  .tabs{border-color:#333}
+  .stat{background:#2c2c2e}
+  .stat .sv{color:#f0f0f0}
+  .modal{background:#2c2c2e;border-color:#444}
+  .modal-date{color:#f0f0f0}
+  .mbtn{border-color:#444;color:#f0f0f0}
+  .mbtn:active{background:#3a3a3c}
+  .section{background:#2c2c2e;border-color:#3a3a3c}
+  .sec-title{color:#f0f0f0}
+  .field input[type=date],.field-row input[type=number]{background:#1c1c1e;border-color:#444;color:#f0f0f0}
+  .big-btn,.io-btn{background:#3a3a3c;border-color:#444;color:#f0f0f0}
+  .io-btn.danger{background:#3a1a1a;border-color:#7a3a3a;color:#ff6b6b}
+  .gdrive-btn{background:#2c2c2e;border-color:#444;color:#ddd}
+  .log-item{color:#f0f0f0;border-color:#3a3a3c}
+  .month-title{color:#f0f0f0}
+  .sync-bar{background:#1a2a3a;color:#7ab4f5}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="sync-bar" class="sync-bar" style="display:none">
+    <div id="sync-dot" class="sync-dot off"></div>
+    <span id="sync-status">Not connected to Google Drive</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('calendar')">Calendar</button>
+    <button class="tab" onclick="showTab('log')">Log</button>
+    <button class="tab" onclick="showTab('settings')">Settings</button>
+  </div>
+
+  <div id="tab-calendar">
+    <div class="stat-row" id="stats"></div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#F0997B"></div>menstrual</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#9FE1CB"></div>follicular</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#AFA9EC"></div>ovulation</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#FAC775"></div>luteal</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#ED93B1"></div>logged period</div>
+    </div>
+    <div id="modal-anchor">
+      <div class="modal-wrap" id="day-modal">
+        <div class="modal">
+          <div class="modal-date" id="modal-date-label"></div>
+          <div class="modal-sub" id="modal-phase-label"></div>
+          <div class="modal-btns" id="modal-btns"></div>
+        </div>
+      </div>
+    </div>
+    <div id="calendars"></div>
+  </div>
+
+  <div id="tab-log" style="display:none">
+    <div class="section">
+      <div class="sec-title">Log a period</div>
+      <div class="field"><label>Period start</label><input type="date" id="inp-start"></div>
+      <div class="field"><label>Period end (optional)</label><input type="date" id="inp-end"></div>
+      <button class="big-btn" onclick="logPeriod()">Add entry</button>
+      <div id="log-msg"></div>
+    </div>
+    <div class="section">
+      <div class="sec-title">Period history</div>
+      <div id="log-list"></div>
+    </div>
+  </div>
+
+  <div id="tab-settings" style="display:none">
+    <div class="section">
+      <div class="sec-title">Cycle settings</div>
+      <div class="field"><label>Default cycle length</label><div class="field-row"><input type="number" id="s-cycle" min="20" max="45" value="28"><span class="unit">days</span></div></div>
+      <div class="field"><label>Average period length</label><div class="field-row"><input type="number" id="s-period" min="2" max="10" value="5"><span class="unit">days</span></div></div>
+      <div class="field"><label>Ovulation window</label><div class="field-row"><input type="number" id="s-ovwin" min="1" max="5" value="3"><span class="unit">days</span></div></div>
+      <div class="field"><label>Months ahead to show</label><div class="field-row"><input type="number" id="s-months" min="3" max="12" value="6"><span class="unit">months</span></div></div>
+      <div class="hint" id="settings-hint"></div>
+      <button class="big-btn" onclick="saveSettings()">Save settings</button>
+      <div id="set-msg"></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Google Drive Sync</div>
+      <div class="field">
+        <label id="drive-status-label">Sign in to sync data automatically across devices. Data is saved to a single file in your Google Drive.</label>
+        <button class="gdrive-btn" id="drive-btn" onclick="handleDriveAuth()">
+          <svg class="gdrive-logo" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg">
+            <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+            <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/>
+            <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/>
+            <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+            <path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+            <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 27h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+          </svg>
+          <span id="drive-btn-label">Sign in with Google</span>
+        </button>
+      </div>
+      <div id="drive-msg"></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-title">Import &amp; Export</div>
+      <div class="field">
+        <label>Export your data as a JSON backup file.</label>
+        <div class="io-row">
+          <button class="io-btn" onclick="exportData()">&#x2913; Export JSON</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Import from a previously exported JSON file.</label>
+        <div class="io-row">
+          <button class="io-btn" onclick="document.getElementById('import-file').click()">&#x2912; Import JSON</button>
+        </div>
+        <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importData(event)">
+      </div>
+      <div class="field">
+        <label>Erase all data and start fresh.</label>
+        <div class="io-row">
+          <button class="io-btn danger" onclick="clearData()">&#x2715; Clear all data</button>
+        </div>
+      </div>
+      <div id="io-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// Replace with your OAuth Client ID after creating it in Google Cloud Console
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+const DRIVE_FILE_NAME  = 'cycle-tracker-data.json';
+const DRIVE_SCOPE      = 'https://www.googleapis.com/auth/drive.file';
+const STORE_KEY        = 'cycle_tracker_v2';
+const TOKEN_KEY        = 'cycle_tracker_gtoken';
+
+// ── DATA ────────────────────────────────────────────────────────────────────
+function loadData(){
+  try{const s=localStorage.getItem(STORE_KEY);if(s)return JSON.parse(s);}catch(e){}
+  return{settings:{cycleLen:28,periodLen:5,ovWin:3,months:6},periods:[]};
+}
+function saveData(d){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(d));}catch(e){}
+  scheduleDriveSync();
+}
+let data=loadData();
+const today=new Date();today.setHours(0,0,0,0);
+
+// ── GOOGLE DRIVE SYNC ───────────────────────────────────────────────────────
+let accessToken=null;
+let driveFileId=null;
+let syncTimer=null;
+let syncPending=false;
+
+function getStoredToken(){
+  try{
+    const t=JSON.parse(localStorage.getItem(TOKEN_KEY)||'null');
+    if(t&&t.expiry>Date.now())return t;
+    localStorage.removeItem(TOKEN_KEY);
+  }catch(e){}
+  return null;
+}
+function storeToken(token,expiresIn){
+  localStorage.setItem(TOKEN_KEY,JSON.stringify({
+    token,expiry:Date.now()+(expiresIn-60)*1000
+  }));
+}
+
+function setSyncStatus(state,msg){
+  const bar=document.getElementById('sync-bar');
+  const dot=document.getElementById('sync-dot');
+  const status=document.getElementById('sync-status');
+  bar.style.display='flex';
+  dot.className='sync-dot '+(state==='on'?'':state==='busy'?'busy':'off');
+  status.textContent=msg;
+}
+
+function handleDriveAuth(){
+  if(accessToken){
+    if(confirm('Sign out of Google Drive sync?')){
+      accessToken=null;driveFileId=null;
+      localStorage.removeItem(TOKEN_KEY);
+      document.getElementById('drive-btn-label').textContent='Sign in with Google';
+      document.getElementById('drive-status-label').textContent='Sign in to sync data automatically across devices.';
+      setSyncStatus('off','Not connected to Google Drive');
+    }
+    return;
+  }
+  const stored=getStoredToken();
+  if(stored){accessToken=stored.token;onSignedIn();return;}
+
+  // Use Google Identity Services token flow
+  const client=google.accounts.oauth2.initTokenClient({
+    client_id:GOOGLE_CLIENT_ID,
+    scope:DRIVE_SCOPE,
+    callback:(resp)=>{
+      if(resp.error){showDriveMsg('Sign-in failed: '+resp.error,'err');return;}
+      accessToken=resp.access_token;
+      storeToken(resp.access_token,resp.expires_in);
+      onSignedIn();
+    }
+  });
+  client.requestAccessToken();
+}
+
+async function onSignedIn(){
+  document.getElementById('drive-btn-label').textContent='Sign out of Google Drive';
+  document.getElementById('drive-status-label').textContent='Syncing automatically to Google Drive.';
+  setSyncStatus('busy','Connecting to Google Drive…');
+  await findOrCreateDriveFile();
+  await pullFromDrive();
+  setSyncStatus('on','Synced with Google Drive');
+  showDriveMsg('Connected! Data will sync automatically.','ok');
+}
+
+async function findOrCreateDriveFile(){
+  // Search for existing file
+  const q=encodeURIComponent(`name='${DRIVE_FILE_NAME}' and trashed=false`);
+  const r=await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,
+    {headers:{Authorization:'Bearer '+accessToken}}
+  );
+  const j=await r.json();
+  if(j.files&&j.files.length>0){
+    driveFileId=j.files[0].id;
+  } else {
+    // Create new file
+    const meta=new Blob([JSON.stringify({name:DRIVE_FILE_NAME,mimeType:'application/json'})],{type:'application/json'});
+    const body=new Blob([JSON.stringify(data)],{type:'application/json'});
+    const form=new FormData();
+    form.append('metadata',meta);
+    form.append('file',body);
+    const cr=await fetch(
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+      {method:'POST',headers:{Authorization:'Bearer '+accessToken},body:form}
+    );
+    const cj=await cr.json();
+    driveFileId=cj.id;
+  }
+}
+
+async function pullFromDrive(){
+  if(!accessToken||!driveFileId)return;
+  try{
+    const r=await fetch(
+      `https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,
+      {headers:{Authorization:'Bearer '+accessToken}}
+    );
+    if(!r.ok)return;
+    const remote=await r.json();
+    if(!remote.periods||!remote.settings)return;
+    // Merge: union of periods by start date, keep latest settings
+    const localStarts=new Set(data.periods.map(p=>p.start));
+    let added=0;
+    for(const p of remote.periods){
+      if(!localStarts.has(p.start)){data.periods.push(p);added++;}
+    }
+    if(added>0){
+      data.settings=remote.settings;
+      localStorage.setItem(STORE_KEY,JSON.stringify(data));
+      renderCalendar();
+    }
+  }catch(e){console.warn('Drive pull failed',e);}
+}
+
+async function pushToDrive(){
+  if(!accessToken||!driveFileId)return;
+  setSyncStatus('busy','Syncing…');
+  try{
+    await fetch(
+      `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
+      {
+        method:'PATCH',
+        headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
+        body:JSON.stringify(data)
+      }
+    );
+    setSyncStatus('on','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    syncPending=false;
+  }catch(e){
+    setSyncStatus('off','Sync failed — will retry');
+    console.warn('Drive push failed',e);
+  }
+}
+
+function scheduleDriveSync(){
+  if(!accessToken)return;
+  syncPending=true;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(pushToDrive,2000); // debounce 2s
+}
+
+// Auto sign-in if we have a stored token
+window.addEventListener('load',()=>{
+  const stored=getStoredToken();
+  if(stored){accessToken=stored.token;onSignedIn();}
+  else{document.getElementById('sync-bar').style.display='none';}
+});
+
+// ── TAB NAVIGATION ──────────────────────────────────────────────────────────
+function showTab(t){
+  ['calendar','log','settings'].forEach((x,i)=>{
+    document.getElementById('tab-'+x).style.display=x===t?'':'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('active',x===t);
+  });
+  if(t==='calendar')renderCalendar();
+  if(t==='log')renderLog();
+  if(t==='settings')loadSettings();
+}
+
+// ── UTILITIES ───────────────────────────────────────────────────────────────
+function parseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function fmtDate(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function fmtDateShort(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function fmtDateFull(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});}
+function isoDate(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function daysBetween(a,b){return Math.round((b-a)/86400000);}
+
+// ── CYCLE LOGIC ─────────────────────────────────────────────────────────────
+function computeCycleLen(){
+  const ps=data.periods.filter(p=>p.start).sort((a,b)=>a.start.localeCompare(b.start));
+  if(ps.length>=3){
+    const gaps=[];
+    for(let i=1;i<ps.length;i++){
+      const g=daysBetween(parseDate(ps[i-1].start),parseDate(ps[i].start));
+      if(g>15&&g<60)gaps.push(g);
+    }
+    if(gaps.length>=2){
+      const avg=Math.round(gaps.reduce((a,b)=>a+b,0)/gaps.length);
+      return{len:avg,calculated:true,cycles:gaps.length};
+    }
+  }
+  return{len:data.settings.cycleLen,calculated:false,cycles:0};
+}
+
+function buildMaps(){
+  const sorted=data.periods.filter(p=>p.start).sort((a,b)=>a.start.localeCompare(b.start));
+  const{len:cl}=computeCycleLen();
+  const{periodLen,ovWin}=data.settings;
+  const ovDay=cl-14,ovStart=ovDay-1,ovEnd=ovDay+Math.floor(ovWin/2);
+  function phase(d){
+    if(d<periodLen)return'menstrual';
+    if(d<ovStart)return'follicular';
+    if(d<=ovEnd)return'ovulation';
+    return'luteal';
+  }
+  const phaseMap={},loggedMap={};
+  const endDate=addDays(today,(data.settings.months+1)*32);
+  if(sorted.length===0){
+    const sd=addDays(today,-28);
+    for(let i=0;i<500;i++){const d=addDays(sd,i);phaseMap[isoDate(d)]=phase(i%cl);}
+  }else{
+    const first=parseDate(sorted[0].start),total=daysBetween(first,endDate)+2;
+    for(let i=0;i<=total;i++){const d=addDays(first,i);phaseMap[isoDate(d)]=phase(i%cl);}
+    for(const p of sorted){
+      const sd=parseDate(p.start),ed=p.end?parseDate(p.end):addDays(sd,periodLen-1);
+      for(let d=new Date(sd);d<=ed;d=addDays(d,1))loggedMap[isoDate(d)]=p.id;
+    }
+  }
+  return{phaseMap,loggedMap,cl};
+}
+
+const PHASE_BG={menstrual:'#F0997B',follicular:'#9FE1CB',ovulation:'#AFA9EC',luteal:'#FAC775'};
+const PHASE_TC={menstrual:'#993C1D',follicular:'#0F6E56',ovulation:'#3C3489',luteal:'#854F0B'};
+const PHASE_NAME={menstrual:'menstrual phase',follicular:'follicular phase',ovulation:'ovulation window',luteal:'luteal phase'};
+let curPhaseMap={},curLoggedMap={},activeModalKey='';
+
+// ── CALENDAR ─────────────────────────────────────────────────────────────────
+function findPeriodForDay(key){
+  const date=parseDate(key);
+  return data.periods.find(p=>{
+    if(!p.start)return false;
+    const sd=parseDate(p.start),ed=p.end?parseDate(p.end):addDays(sd,data.settings.periodLen-1);
+    return date>=sd&&date<=ed;
+  });
+}
+
+function dayTapped(key,cellEl){
+  const modal=document.getElementById('day-modal');
+  if(activeModalKey===key){modal.classList.remove('open');activeModalKey='';return;}
+  activeModalKey=key;
+  const date=parseDate(key),phase=curPhaseMap[key];
+  const matchedPeriod=findPeriodForDay(key);
+  const nearbyPeriod=!matchedPeriod?data.periods.find(p=>{
+    if(!p.start)return false;
+    const sd=parseDate(p.start),ed=p.end?parseDate(p.end):addDays(sd,data.settings.periodLen-1);
+    const gap=daysBetween(ed,date);
+    return date>sd&&gap>=0&&gap<=4;
+  }):null;
+  const openPeriod=data.periods.find(p=>p.start&&!p.end&&key>=p.start);
+  document.getElementById('modal-date-label').textContent=fmtDateFull(date);
+  let subLabel='';
+  if(matchedPeriod)subLabel='logged period day';
+  else if(nearbyPeriod)subLabel=`near end of period started ${fmtDateShort(parseDate(nearbyPeriod.start))}`;
+  else if(phase)subLabel=PHASE_NAME[phase]||'';
+  document.getElementById('modal-phase-label').textContent=subLabel;
+  const btns=document.getElementById('modal-btns');btns.innerHTML='';
+  function makeBtn(label,icon,action,extra){
+    const b=document.createElement('button');b.className='mbtn'+(extra?' '+extra:'');
+    b.innerHTML=`<span style="font-size:18px">${icon}</span><span>${label}</span>`;
+    b.onclick=()=>{action();modal.classList.remove('open');activeModalKey='';renderCalendar();};
+    btns.appendChild(b);
+  }
+  makeBtn('Log as period start','&#x25CF;',()=>{data.periods.push({start:key,end:null,id:Date.now()});saveData(data);});
+  if(openPeriod){
+    makeBtn(`Set as end of period (started ${fmtDateShort(parseDate(openPeriod.start))})`, '&#x2713;',()=>{openPeriod.end=key;saveData(data);});
+  }
+  const periodToExtend=matchedPeriod||nearbyPeriod;
+  if(periodToExtend&&periodToExtend!==openPeriod){
+    const currentEndStr=periodToExtend.end?fmtDateShort(parseDate(periodToExtend.end)):'(inferred)';
+    makeBtn(`Update period end to this day (was ${currentEndStr})`,'&#x270E;',()=>{periodToExtend.end=key;saveData(data);});
+  }
+  if(matchedPeriod){
+    makeBtn('Remove this period entry','&#x2715;',()=>{data.periods=data.periods.filter(p=>p.id!==matchedPeriod.id);saveData(data);});
+  }
+  const cancel=document.createElement('button');cancel.className='mbtn mbtn-cancel';
+  cancel.innerHTML='<span>Cancel</span>';
+  cancel.onclick=()=>{modal.classList.remove('open');activeModalKey='';};
+  btns.appendChild(cancel);
+  const anchor=document.getElementById('modal-anchor');
+  cellEl.closest('.month-block').insertAdjacentElement('beforebegin',anchor);
+  modal.classList.add('open');
+  setTimeout(()=>anchor.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+function renderCalendar(){
+  const{phaseMap,loggedMap,cl}=buildMaps();
+  curPhaseMap=phaseMap;curLoggedMap=loggedMap;
+  const{calculated,cycles}=computeCycleLen();
+  const badge=calculated
+    ?`<div class="badge badge-calc">calculated</div>`
+    :`<div class="badge badge-manual">default</div>`;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="sv">${cl}</div><div class="sl">cycle days</div>${badge}</div>
+    <div class="stat"><div class="sv">${data.settings.periodLen}</div><div class="sl">period days</div></div>
+    <div class="stat"><div class="sv">${data.periods.length}</div><div class="sl">logged</div></div>`;
+  const calDiv=document.getElementById('calendars');calDiv.innerHTML='';
+  const dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  for(let mi=0;mi<data.settings.months;mi++){
+    const d=new Date(today.getFullYear(),today.getMonth()+mi,1);
+    const block=document.createElement('div');block.className='month-block';
+    const titleEl=document.createElement('div');titleEl.className='month-title';
+    titleEl.textContent=d.toLocaleDateString('en-US',{month:'long',year:'numeric'});block.appendChild(titleEl);
+    const headsEl=document.createElement('div');headsEl.className='cal-heads';
+    dayNames.forEach(h=>{const hd=document.createElement('div');hd.className='cal-head';hd.textContent=h;headsEl.appendChild(hd);});
+    block.appendChild(headsEl);
+    const grid=document.createElement('div');grid.className='cal-grid';
+    const firstDay=d.getDay();
+    for(let b=0;b<firstDay;b++){const e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
+    const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+    for(let day=1;day<=dim;day++){
+      const date=new Date(d.getFullYear(),d.getMonth(),day);
+      const key=isoDate(date),isToday=key===isoDate(today),logged=!!loggedMap[key],phase=phaseMap[key];
+      const cell=document.createElement('div');cell.className='cal-day';
+      let bg,tc;
+      if(logged){bg='#ED93B1';tc='#72243E';}
+      else if(phase){bg=PHASE_BG[phase];tc=PHASE_TC[phase];}
+      else{bg='transparent';tc='inherit';}
+      cell.style.background=bg;
+      if(isToday){cell.style.outline='2.5px solid #333';cell.style.outlineOffset='-2px';}
+      const span=document.createElement('span');span.style.color=tc;span.textContent=day;
+      cell.appendChild(span);cell.addEventListener('click',()=>dayTapped(key,cell));grid.appendChild(cell);
+    }
+    block.appendChild(grid);calDiv.appendChild(block);
+  }
+}
+
+// ── LOG TAB ──────────────────────────────────────────────────────────────────
+function logPeriod(){
+  const start=document.getElementById('inp-start').value,end=document.getElementById('inp-end').value;
+  const msg=document.getElementById('log-msg');
+  if(!start){msg.innerHTML='<div class="msg err">Please enter a start date.</div>';return;}
+  if(end&&end<start){msg.innerHTML='<div class="msg err">End must be after start.</div>';return;}
+  data.periods.push({start,end:end||null,id:Date.now()});saveData(data);
+  document.getElementById('inp-start').value='';document.getElementById('inp-end').value='';
+  msg.innerHTML='<div class="msg ok">Period logged!</div>';renderLog();
+  setTimeout(()=>msg.innerHTML='',2500);
+}
+function deletePeriod(id){data.periods=data.periods.filter(p=>p.id!==id);saveData(data);renderLog();}
+function renderLog(){
+  const sorted=[...data.periods].sort((a,b)=>b.start.localeCompare(a.start));
+  const el=document.getElementById('log-list');
+  if(!sorted.length){el.innerHTML='<div class="empty">No periods logged yet.</div>';return;}
+  el.innerHTML=sorted.map(p=>`
+    <div class="log-item">
+      <span>${fmtDate(parseDate(p.start))}${p.end?' &rarr; '+fmtDate(parseDate(p.end)):' (ongoing)'}</span>
+      <span class="del" onclick="deletePeriod(${p.id})">&#x2715;</span>
+    </div>`).join('');
+}
+
+// ── SETTINGS TAB ─────────────────────────────────────────────────────────────
+function loadSettings(){
+  const s=data.settings;
+  document.getElementById('s-cycle').value=s.cycleLen;
+  document.getElementById('s-period').value=s.periodLen;
+  document.getElementById('s-ovwin').value=s.ovWin;
+  document.getElementById('s-months').value=s.months;
+  const{calculated,len,cycles}=computeCycleLen();
+  const hint=document.getElementById('settings-hint');
+  if(calculated){
+    hint.textContent=`Cycle length is calculated from ${cycles} logged cycles (${len} days avg). The default is only used until enough data is available.`;
+  }else{
+    const needed=Math.max(0,3-data.periods.length);
+    hint.textContent=`Using default cycle length. Log ${needed} more period${needed===1?'':'s'} to enable automatic calculation.`;
+  }
+  // Update drive button state
+  if(accessToken){
+    document.getElementById('drive-btn-label').textContent='Sign out of Google Drive';
+    document.getElementById('drive-status-label').textContent='Syncing automatically to Google Drive.';
+  }
+}
+function saveSettings(){
+  data.settings.cycleLen=parseInt(document.getElementById('s-cycle').value)||28;
+  data.settings.periodLen=parseInt(document.getElementById('s-period').value)||5;
+  data.settings.ovWin=parseInt(document.getElementById('s-ovwin').value)||3;
+  data.settings.months=parseInt(document.getElementById('s-months').value)||6;
+  saveData(data);
+  document.getElementById('set-msg').innerHTML='<div class="msg ok">Settings saved.</div>';
+  setTimeout(()=>document.getElementById('set-msg').innerHTML='',2500);
+}
+
+// ── IMPORT / EXPORT ───────────────────────────────────────────────────────────
+function exportData(){
+  const now=new Date();
+  const stamp=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='cycle-tracker-'+stamp+'.json';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+  showIOMsg('Data exported successfully.','ok');
+}
+function importData(evt){
+  const file=evt.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const parsed=JSON.parse(e.target.result);
+      if(!parsed.periods||!parsed.settings)throw new Error('Invalid format');
+      const existingStarts=new Set(data.periods.map(p=>p.start));
+      let added=0;
+      for(const p of parsed.periods){if(!existingStarts.has(p.start)){data.periods.push(p);added++;}}
+      if(data.periods.length===parsed.periods.length)data.settings=parsed.settings;
+      saveData(data);renderCalendar();
+      showIOMsg('Imported '+added+' new period'+(added===1?'':'s')+'.'+(added<parsed.periods.length?' '+(parsed.periods.length-added)+' duplicate(s) skipped.':''),'ok');
+    }catch(err){showIOMsg('Import failed: '+err.message,'err');}
+    evt.target.value='';
+  };
+  reader.readAsText(file);
+}
+function clearData(){
+  if(!confirm('This will permanently erase all logged periods and settings. Are you sure?'))return;
+  data={settings:{cycleLen:28,periodLen:5,ovWin:3,months:6},periods:[]};
+  saveData(data);renderCalendar();loadSettings();
+  showIOMsg('All data cleared.','ok');
+}
+function showIOMsg(msg,type){
+  const el=document.getElementById('io-msg');
+  el.innerHTML='<div class="msg '+type+'">'+msg+'</div>';
+  setTimeout(()=>el.innerHTML='',3500);
+}
+function showDriveMsg(msg,type){
+  const el=document.getElementById('drive-msg');
+  el.innerHTML='<div class="msg '+type+'">'+msg+'</div>';
+  setTimeout(()=>el.innerHTML='',4000);
+}
+
+renderCalendar();
+</script>
+</body>
+</html>
