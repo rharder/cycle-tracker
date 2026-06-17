@@ -1,123 +1,96 @@
 # Cycle Tracker
 
-A mobile-friendly menstrual cycle tracker that lives at
-**https://rharder.github.io/cycle-tracker/**
+A free, private menstrual cycle tracker you can use right now — no app store, no account, no data collection.
+
+**→ Open the app: [rharder.github.io/cycle-tracker](https://rharder.github.io/cycle-tracker/)**
 
 ---
 
-## Setup (one-time)
+## What it does
 
-### 1. Push files to GitHub
+Cycle Tracker helps a person (or their partner) log menstrual periods and visualize the four phases of the cycle across several months:
 
-```bash
-git clone https://github.com/rharder/cycle-tracker.git
-cd cycle-tracker
-cp /path/to/downloaded/cycle-tracker.html index.html
-cp /path/to/downloaded/apple-touch-icon.png .
-cp /path/to/downloaded/favicon.ico .
-git add .
-git commit -m "Initial commit"
-git push
-```
+| Color | Phase | Typical length |
+|---|---|---|
+| 🟠 Coral | Menstrual | ~5 days |
+| 🟢 Teal | Follicular | ~9 days |
+| 🟣 Purple | Ovulation | ~3 days |
+| 🟡 Amber | Luteal | ~11 days |
 
-### 2. Enable GitHub Pages
-
-1. Go to https://github.com/rharder/cycle-tracker/settings/pages
-2. Under **Source**, select **Deploy from a branch**
-3. Branch: `main`, folder: `/ (root)`
-4. Click **Save**
-
-Your app will be live at **https://rharder.github.io/cycle-tracker/** within a minute or two.
+As you log more cycles, the app automatically calculates your actual average cycle length and adjusts predictions to match.
 
 ---
 
-## Google Drive Sync Setup
+## How to use it
 
-This lets both of you sync data automatically using a shared Google account.
-
-### Step 1 — Create a Google Cloud project
-
-1. Go to https://console.cloud.google.com/
-2. Click **Select a project** → **New Project**
-3. Name it `cycle-tracker`, click **Create**
-
-### Step 2 — Enable the Google Drive API
-
-1. In your new project, go to **APIs & Services** → **Library**
-2. Search for **Google Drive API** and click **Enable**
-
-### Step 3 — Create an OAuth Client ID
-
-1. Go to **APIs & Services** → **Credentials**
-2. Click **+ Create Credentials** → **OAuth client ID**
-3. If prompted, configure the **OAuth consent screen** first:
-   - User type: **External**
-   - App name: `Cycle Tracker`
-   - Support email: your email
-   - Scroll to the bottom, click **Save and Continue** through all steps
-   - On the final screen, click **Back to Dashboard**
-4. Back in Credentials → **+ Create Credentials** → **OAuth client ID**
-   - Application type: **Web application**
-   - Name: `Cycle Tracker Web`
-   - Under **Authorized JavaScript origins**, add:
-     ```
-     https://rharder.github.io
-     ```
-   - Click **Create**
-5. Copy the **Client ID** — it looks like `1234567890-abc123.apps.googleusercontent.com`
-
-### Step 4 — Add your Client ID to the app
-
-Open `index.html` and find this line near the top of the `<script>` section:
-
-```javascript
-const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
-```
-
-Replace `YOUR_GOOGLE_CLIENT_ID` with your actual Client ID, then push:
-
-```bash
-git add index.html
-git commit -m "Add Google OAuth client ID"
-git push
-```
-
-### Step 5 — Add your app to the OAuth consent screen test users
-
-While your app is in "Testing" mode, only explicitly added users can sign in:
-
-1. Go to **APIs & Services** → **OAuth consent screen**
-2. Scroll to **Test users** → **+ Add Users**
-3. Add the Google account email(s) you'll use to sign in
-
----
-
-## Using the app
-
-### Add to iPhone home screen
-
-1. Open **https://rharder.github.io/cycle-tracker/** in Safari
-2. Tap the **Share** button (box with arrow)
+### On iPhone (recommended)
+1. Open **https://rharder.github.io/cycle-tracker/** in **Safari**
+2. Tap the **Share** button (the box with an arrow at the bottom)
 3. Tap **Add to Home Screen**
-4. Tap **Add**
+4. Tap **Add** — it will appear on your home screen with its own icon
 
-### Sync between devices
+### On Android
+1. Open the URL in **Chrome**
+2. Tap the three-dot menu → **Add to Home screen**
 
-1. Open the app on either device
-2. Go to **Settings** tab
-3. Tap **Sign in with Google** and sign in with your shared Google account
-4. Data syncs automatically — changes push to Drive within 2 seconds of any edit
-
-The sync file is named `cycle-tracker-data.json` in the root of your Google Drive.
-Both devices merge data on connect, so no history is lost when switching devices.
+### On desktop
+Just bookmark the URL — it works in any modern browser.
 
 ---
 
-## File structure
+## Logging periods
 
-```
-index.html          — the entire app (self-contained)
-apple-touch-icon.png — 1024×1024 home screen icon
-favicon.ico         — browser favicon
-README.md           — this file
-```
+Tap any day on the calendar to open a menu. From there you can:
+
+- **Log that day as a period start**
+- **Set it as the end of an open period**
+- **Update the end date** of a nearby logged period
+- **Remove** a period entry
+
+You can also log periods manually in the **Log** tab.
+
+---
+
+## Syncing between devices (optional)
+
+By default, data is stored only in your browser on that device. To sync across devices:
+
+1. Go to the **Settings** tab
+2. Tap **Sign in with Google**
+3. Sign in with a Google account
+
+Your data will be saved to a file called `cycle-tracker-data.json` in **your own Google Drive** — not anyone else's. Both devices merge data when they connect, so nothing is lost.
+
+> **Note:** The Google sign-in uses your own Google account and goes directly to Google's servers. The app developer has no access to your Drive or your data.
+
+---
+
+## Privacy
+
+This app was built with privacy as a core principle. Here is exactly what happens with your data:
+
+- **No server.** There is no backend. The app is a single HTML file served by GitHub Pages.
+- **No analytics.** There is no tracking, no cookies, no telemetry of any kind.
+- **No account required.** You never sign up for anything to use this app.
+- **Data stays on your device.** Period data is stored in your browser's `localStorage` — the same place a website might remember your preferences. It never leaves your device unless you choose to enable Google Drive sync.
+- **Google Drive sync is optional and goes to your account.** If you use it, your data is saved to a JSON file in *your* Google Drive. The app developer cannot see it, access it, or retrieve it.
+- **The code is fully open source.** Every line of code is visible at [github.com/rharder/cycle-tracker](https://github.com/rharder/cycle-tracker). You can verify exactly what the app does.
+- **You can export your data at any time.** Go to Settings → Export JSON to download a backup of everything.
+
+### A note about sensitive data
+
+Period tracking data is personal health information. We take that seriously. Because this app has no server and no accounts, there is simply no mechanism by which your data could be collected, sold, or breached through this app. The only copies of your data are the ones you choose to keep.
+
+---
+
+## Backing up your data
+
+Go to **Settings → Export JSON** to download a backup file. You can re-import it on any device using **Settings → Import JSON**.
+
+---
+
+## About
+
+Built by [rharder](https://github.com/rharder). Free to use, free to fork.
+
+If you find a bug or have a suggestion, open an [issue](https://github.com/rharder/cycle-tracker/issues).
