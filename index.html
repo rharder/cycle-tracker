@@ -158,6 +158,7 @@ html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-syste
       <div class="leg-item"><div class="leg-dot" style="background:#AFA9EC"></div>ovulation</div>
       <div class="leg-item"><div class="leg-dot" style="background:#FAC775"></div>luteal</div>
       <div class="leg-item"><div class="leg-dot" style="background:#ED93B1"></div>logged period</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#FCDDD1;border:1.5px dashed #D4634A"></div>predicted period</div>
     </div>
     <div id="modal-anchor">
       <div class="modal-wrap" id="day-modal">
@@ -423,7 +424,7 @@ function showTab(t){
     document.getElementById('tab-'+x).style.display=x===t?'':'none';
     document.querySelectorAll('.tab')[i].classList.toggle('active',x===t);
   });
-  if(t==='calendar')renderCalendar();
+  if(t==='calendar')renderCalendar(true);
   if(t==='log')renderLog();
   if(t==='settings')loadSettings();
 }
@@ -468,7 +469,7 @@ function buildMaps(){
   const phaseMap={},loggedMap={};
   const endDate=addDays(today,(data.settings.months+1)*32);
   if(sorted.length===0){
-    const sd=addDays(today,-28);
+    const sd=addDays(today,-100);
     for(let i=0;i<500;i++){const d=addDays(sd,i);phaseMap[isoDate(d)]=phase(i%cl);}
   }else{
     const first=parseDate(sorted[0].start),total=daysBetween(first,endDate)+2;
@@ -544,7 +545,7 @@ function dayTapped(key,cellEl){
   setTimeout(()=>anchor.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
 }
 
-function renderCalendar(){
+function renderCalendar(scrollToToday=false){
   const{phaseMap,loggedMap,cl}=buildMaps();
   curPhaseMap=phaseMap;curLoggedMap=loggedMap;
   const{calculated,cycles}=computeCycleLen();
@@ -557,9 +558,11 @@ function renderCalendar(){
     <div class="stat"><div class="sv">${data.periods.length}</div><div class="sl">logged</div></div>`;
   const calDiv=document.getElementById('calendars');calDiv.innerHTML='';
   const dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
-  for(let mi=0;mi<data.settings.months;mi++){
+  const PAST_MONTHS=3;
+  for(let mi=-PAST_MONTHS;mi<data.settings.months;mi++){
     const d=new Date(today.getFullYear(),today.getMonth()+mi,1);
     const block=document.createElement('div');block.className='month-block';
+    if(mi===0)block.id='month-current';
     const titleEl=document.createElement('div');titleEl.className='month-title';
     titleEl.textContent=d.toLocaleDateString('en-US',{month:'long',year:'numeric'});block.appendChild(titleEl);
     const headsEl=document.createElement('div');headsEl.className='cal-heads';
@@ -572,9 +575,11 @@ function renderCalendar(){
     for(let day=1;day<=dim;day++){
       const date=new Date(d.getFullYear(),d.getMonth(),day);
       const key=isoDate(date),isToday=key===isoDate(today),logged=!!loggedMap[key],phase=phaseMap[key];
+      const isPredictedPeriod=!logged&&phase==='menstrual'&&date>=today;
       const cell=document.createElement('div');cell.className='cal-day';
       let bg,tc;
       if(logged){bg='#ED93B1';tc='#72243E';}
+      else if(isPredictedPeriod){bg='#FCDDD1';tc='#993C1D';cell.style.border='1.5px dashed #D4634A';}
       else if(phase){bg=PHASE_BG[phase];tc=PHASE_TC[phase];}
       else{bg='transparent';tc='inherit';}
       cell.style.background=bg;
@@ -583,6 +588,10 @@ function renderCalendar(){
       cell.appendChild(span);cell.addEventListener('click',()=>dayTapped(key,cell));grid.appendChild(cell);
     }
     block.appendChild(grid);calDiv.appendChild(block);
+  }
+  if(scrollToToday){
+    const cur=document.getElementById('month-current');
+    if(cur)setTimeout(()=>cur.scrollIntoView({behavior:'instant',block:'start'}),0);
   }
 }
 
@@ -687,7 +696,7 @@ function showDriveMsg(msg,type){
   setTimeout(()=>el.innerHTML='',4000);
 }
 
-renderCalendar();
+renderCalendar(true);
 
 function openHelp(){document.getElementById('help-overlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeHelp(){document.getElementById('help-overlay').classList.remove('open');document.body.style.overflow='';}
@@ -711,6 +720,7 @@ function closeHelpIfBg(e){if(e.target===document.getElementById('help-overlay'))
 
       <table>
         <tr><th>Color</th><th>Phase</th><th>Typical length</th></tr>
+        <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#FCDDD1;border:1.5px dashed #D4634A;vertical-align:-2px;margin-right:5px"></span>Light Coral (dashed)</td><td>Predicted period</td><td>upcoming</td></tr>
         <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#F0997B;vertical-align:-2px;margin-right:5px"></span>Coral</td><td>Menstrual</td><td>~5 days</td></tr>
         <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9FE1CB;vertical-align:-2px;margin-right:5px"></span>Teal</td><td>Follicular</td><td>~9 days</td></tr>
         <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#AFA9EC;vertical-align:-2px;margin-right:5px"></span>Purple</td><td>Ovulation</td><td>~3 days</td></tr>
