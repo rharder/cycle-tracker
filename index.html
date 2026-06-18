@@ -135,6 +135,9 @@ html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-syste
   .help-body .priv-box{background:#1a2a3a}
   .help-body .priv-box p{color:#7ab4f5}
 }
+.history-toggle{text-align:center;padding:6px 0 14px;cursor:pointer;font-size:13px;color:#aaa;user-select:none;-webkit-tap-highlight-color:transparent}
+.history-toggle:active{color:#666}
+@media(prefers-color-scheme:dark){.history-toggle{color:#666}.history-toggle:active{color:#999}}
 </style>
 </head>
 <body>
@@ -424,7 +427,7 @@ function showTab(t){
     document.getElementById('tab-'+x).style.display=x===t?'':'none';
     document.querySelectorAll('.tab')[i].classList.toggle('active',x===t);
   });
-  if(t==='calendar')renderCalendar(true);
+  if(t==='calendar')renderCalendar();
   if(t==='log')renderLog();
   if(t==='settings')loadSettings();
 }
@@ -485,7 +488,7 @@ function buildMaps(){
 const PHASE_BG={menstrual:'#F0997B',follicular:'#9FE1CB',ovulation:'#AFA9EC',luteal:'#FAC775'};
 const PHASE_TC={menstrual:'#993C1D',follicular:'#0F6E56',ovulation:'#3C3489',luteal:'#854F0B'};
 const PHASE_NAME={menstrual:'menstrual phase',follicular:'follicular phase',ovulation:'ovulation window',luteal:'luteal phase'};
-let curPhaseMap={},curLoggedMap={},activeModalKey='';
+let curPhaseMap={},curLoggedMap={},activeModalKey='',historyExpanded=false;
 
 // ── CALENDAR ─────────────────────────────────────────────────────────────────
 function findPeriodForDay(key){
@@ -545,7 +548,7 @@ function dayTapped(key,cellEl){
   setTimeout(()=>anchor.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
 }
 
-function renderCalendar(scrollToToday=false){
+function renderCalendar(){
   const{phaseMap,loggedMap,cl}=buildMaps();
   curPhaseMap=phaseMap;curLoggedMap=loggedMap;
   const{calculated,cycles}=computeCycleLen();
@@ -559,7 +562,7 @@ function renderCalendar(scrollToToday=false){
   const calDiv=document.getElementById('calendars');calDiv.innerHTML='';
   const dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
   const PAST_MONTHS=3;
-  for(let mi=-PAST_MONTHS;mi<data.settings.months;mi++){
+  function makeMonthBlock(mi){
     const d=new Date(today.getFullYear(),today.getMonth()+mi,1);
     const block=document.createElement('div');block.className='month-block';
     if(mi===0)block.id='month-current';
@@ -587,12 +590,25 @@ function renderCalendar(scrollToToday=false){
       const span=document.createElement('span');span.style.color=tc;span.textContent=day;
       cell.appendChild(span);cell.addEventListener('click',()=>dayTapped(key,cell));grid.appendChild(cell);
     }
-    block.appendChild(grid);calDiv.appendChild(block);
+    block.appendChild(grid);
+    return block;
   }
-  if(scrollToToday){
-    const cur=document.getElementById('month-current');
-    if(cur)setTimeout(()=>cur.scrollIntoView({behavior:'instant',block:'start'}),0);
-  }
+  const pastContainer=document.createElement('div');
+  pastContainer.id='past-months-container';
+  if(!historyExpanded)pastContainer.style.display='none';
+  for(let mi=-PAST_MONTHS;mi<0;mi++)pastContainer.appendChild(makeMonthBlock(mi));
+  calDiv.appendChild(pastContainer);
+  const toggleBtn=document.createElement('div');
+  toggleBtn.className='history-toggle';
+  toggleBtn.textContent=historyExpanded?'▾ Hide past months':'▸ Show 3 past months';
+  toggleBtn.onclick=()=>{
+    historyExpanded=!historyExpanded;
+    pastContainer.style.display=historyExpanded?'':'none';
+    toggleBtn.textContent=historyExpanded?'▾ Hide past months':'▸ Show 3 past months';
+    if(historyExpanded)setTimeout(()=>pastContainer.scrollIntoView({behavior:'smooth',block:'start'}),0);
+  };
+  calDiv.appendChild(toggleBtn);
+  for(let mi=0;mi<data.settings.months;mi++)calDiv.appendChild(makeMonthBlock(mi));
 }
 
 // ── LOG TAB ──────────────────────────────────────────────────────────────────
@@ -696,7 +712,7 @@ function showDriveMsg(msg,type){
   setTimeout(()=>el.innerHTML='',4000);
 }
 
-renderCalendar(true);
+renderCalendar();
 
 function openHelp(){document.getElementById('help-overlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeHelp(){document.getElementById('help-overlay').classList.remove('open');document.body.style.overflow='';}
