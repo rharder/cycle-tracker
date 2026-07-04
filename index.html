@@ -135,9 +135,6 @@ html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-syste
   .help-body .priv-box{background:#1a2a3a}
   .help-body .priv-box p{color:#7ab4f5}
 }
-.history-toggle{text-align:center;padding:6px 0 14px;cursor:pointer;font-size:13px;color:#aaa;user-select:none;-webkit-tap-highlight-color:transparent}
-.history-toggle:active{color:#666}
-@media(prefers-color-scheme:dark){.history-toggle{color:#666}.history-toggle:active{color:#999}}
 </style>
 </head>
 <body>
@@ -161,7 +158,6 @@ html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-syste
       <div class="leg-item"><div class="leg-dot" style="background:#AFA9EC"></div>ovulation</div>
       <div class="leg-item"><div class="leg-dot" style="background:#FAC775"></div>luteal</div>
       <div class="leg-item"><div class="leg-dot" style="background:#ED93B1"></div>logged period</div>
-      <div class="leg-item"><div class="leg-dot" style="background:#FCDDD1;border:1.5px dashed #D4634A"></div>predicted period</div>
     </div>
     <div id="modal-anchor">
       <div class="modal-wrap" id="day-modal">
@@ -252,7 +248,7 @@ html,body{width:100%;margin:0;padding:0;background:#fff;font-family:-apple-syste
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────────────
 // Replace with your OAuth Client ID after creating it in Google Cloud Console
-const GOOGLE_CLIENT_ID = '472211869359-f7srsu0l1cp3vdm3v30q8k61fqcsmmcp.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
 const DRIVE_FILE_NAME  = 'cycle-tracker-data.json';
 const DRIVE_SCOPE      = 'https://www.googleapis.com/auth/drive.file';
 const STORE_KEY        = 'cycle_tracker_v2';
@@ -471,15 +467,49 @@ function buildMaps(){
   }
   const phaseMap={},loggedMap={};
   const endDate=addDays(today,(data.settings.months+1)*32);
+
   if(sorted.length===0){
-    const sd=addDays(today,-100);
+    // No data: tile from 28 days ago using default cycle length
+    const sd=addDays(today,-28);
     for(let i=0;i<500;i++){const d=addDays(sd,i);phaseMap[isoDate(d)]=phase(i%cl);}
   }else{
-    const first=parseDate(sorted[0].start),total=daysBetween(first,endDate)+2;
-    for(let i=0;i<=total;i++){const d=addDays(first,i);phaseMap[isoDate(d)]=phase(i%cl);}
+    // Build a list of cycle anchor points: each logged period start is an anchor.
+    // Between anchors (and after the last one), tile forward using the computed cycle length.
+    // This means the phase resets to day-0 at every logged period start, so predictions
+    // after the most recent period are always relative to that period — not drifted from
+    // the very first one.
+
+    // Fill phaseMap day by day from the first period start to endDate
+    const first=parseDate(sorted[0].start);
+
+    // Build a Set of anchor dates (period start dates) for quick lookup
+    const anchorDates=sorted.map(p=>p.start); // already sorted ISO strings
+
+    let cycleStart=first;
+    let anchorIdx=0;
+    let d=new Date(first);
+
+    while(d<=endDate){
+      const key=isoDate(d);
+
+      // If this date is a logged period start (and not the very first anchor we're already on),
+      // re-anchor the cycle here
+      if(anchorIdx+1<anchorDates.length && key===anchorDates[anchorIdx+1]){
+        anchorIdx++;
+        cycleStart=parseDate(anchorDates[anchorIdx]);
+      }
+
+      const dayInCycle=daysBetween(cycleStart,d);
+      // Use modulo so we keep tiling forward after the last anchor
+      phaseMap[key]=phase(dayInCycle%cl);
+
+      d=addDays(d,1);
+    }
+
+    // Build loggedMap from actual period entries
     for(const p of sorted){
       const sd=parseDate(p.start),ed=p.end?parseDate(p.end):addDays(sd,periodLen-1);
-      for(let d=new Date(sd);d<=ed;d=addDays(d,1))loggedMap[isoDate(d)]=p.id;
+      for(let dd=new Date(sd);dd<=ed;dd=addDays(dd,1))loggedMap[isoDate(dd)]=p.id;
     }
   }
   return{phaseMap,loggedMap,cl};
@@ -488,7 +518,7 @@ function buildMaps(){
 const PHASE_BG={menstrual:'#F0997B',follicular:'#9FE1CB',ovulation:'#AFA9EC',luteal:'#FAC775'};
 const PHASE_TC={menstrual:'#993C1D',follicular:'#0F6E56',ovulation:'#3C3489',luteal:'#854F0B'};
 const PHASE_NAME={menstrual:'menstrual phase',follicular:'follicular phase',ovulation:'ovulation window',luteal:'luteal phase'};
-let curPhaseMap={},curLoggedMap={},activeModalKey='',historyExpanded=false;
+let curPhaseMap={},curLoggedMap={},activeModalKey='';
 
 // ── CALENDAR ─────────────────────────────────────────────────────────────────
 function findPeriodForDay(key){
@@ -561,11 +591,9 @@ function renderCalendar(){
     <div class="stat"><div class="sv">${data.periods.length}</div><div class="sl">logged</div></div>`;
   const calDiv=document.getElementById('calendars');calDiv.innerHTML='';
   const dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
-  const PAST_MONTHS=3;
-  function makeMonthBlock(mi){
+  for(let mi=0;mi<data.settings.months;mi++){
     const d=new Date(today.getFullYear(),today.getMonth()+mi,1);
     const block=document.createElement('div');block.className='month-block';
-    if(mi===0)block.id='month-current';
     const titleEl=document.createElement('div');titleEl.className='month-title';
     titleEl.textContent=d.toLocaleDateString('en-US',{month:'long',year:'numeric'});block.appendChild(titleEl);
     const headsEl=document.createElement('div');headsEl.className='cal-heads';
@@ -578,11 +606,9 @@ function renderCalendar(){
     for(let day=1;day<=dim;day++){
       const date=new Date(d.getFullYear(),d.getMonth(),day);
       const key=isoDate(date),isToday=key===isoDate(today),logged=!!loggedMap[key],phase=phaseMap[key];
-      const isPredictedPeriod=!logged&&phase==='menstrual'&&date>=today;
       const cell=document.createElement('div');cell.className='cal-day';
       let bg,tc;
       if(logged){bg='#ED93B1';tc='#72243E';}
-      else if(isPredictedPeriod){bg='#FCDDD1';tc='#993C1D';cell.style.border='1.5px dashed #D4634A';}
       else if(phase){bg=PHASE_BG[phase];tc=PHASE_TC[phase];}
       else{bg='transparent';tc='inherit';}
       cell.style.background=bg;
@@ -590,25 +616,8 @@ function renderCalendar(){
       const span=document.createElement('span');span.style.color=tc;span.textContent=day;
       cell.appendChild(span);cell.addEventListener('click',()=>dayTapped(key,cell));grid.appendChild(cell);
     }
-    block.appendChild(grid);
-    return block;
+    block.appendChild(grid);calDiv.appendChild(block);
   }
-  const pastContainer=document.createElement('div');
-  pastContainer.id='past-months-container';
-  if(!historyExpanded)pastContainer.style.display='none';
-  for(let mi=-PAST_MONTHS;mi<0;mi++)pastContainer.appendChild(makeMonthBlock(mi));
-  calDiv.appendChild(pastContainer);
-  const toggleBtn=document.createElement('div');
-  toggleBtn.className='history-toggle';
-  toggleBtn.textContent=historyExpanded?'▾ Hide past months':'▸ Show 3 past months';
-  toggleBtn.onclick=()=>{
-    historyExpanded=!historyExpanded;
-    pastContainer.style.display=historyExpanded?'':'none';
-    toggleBtn.textContent=historyExpanded?'▾ Hide past months':'▸ Show 3 past months';
-    if(historyExpanded)setTimeout(()=>pastContainer.scrollIntoView({behavior:'smooth',block:'start'}),0);
-  };
-  calDiv.appendChild(toggleBtn);
-  for(let mi=0;mi<data.settings.months;mi++)calDiv.appendChild(makeMonthBlock(mi));
 }
 
 // ── LOG TAB ──────────────────────────────────────────────────────────────────
@@ -736,7 +745,6 @@ function closeHelpIfBg(e){if(e.target===document.getElementById('help-overlay'))
 
       <table>
         <tr><th>Color</th><th>Phase</th><th>Typical length</th></tr>
-        <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#FCDDD1;border:1.5px dashed #D4634A;vertical-align:-2px;margin-right:5px"></span>Light Coral (dashed)</td><td>Predicted period</td><td>upcoming</td></tr>
         <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#F0997B;vertical-align:-2px;margin-right:5px"></span>Coral</td><td>Menstrual</td><td>~5 days</td></tr>
         <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9FE1CB;vertical-align:-2px;margin-right:5px"></span>Teal</td><td>Follicular</td><td>~9 days</td></tr>
         <tr><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#AFA9EC;vertical-align:-2px;margin-right:5px"></span>Purple</td><td>Ovulation</td><td>~3 days</td></tr>
