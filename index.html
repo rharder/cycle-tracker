@@ -469,9 +469,9 @@ function buildMaps(){
   const endDate=addDays(today,(data.settings.months+1)*32);
 
   if(sorted.length===0){
-    // No data: tile from 28 days ago using default cycle length
-    const sd=addDays(today,-28);
-    for(let i=0;i<500;i++){const d=addDays(sd,i);phaseMap[isoDate(d)]=phase(i%cl);}
+    // No data: tile from 3 months back using default cycle length
+    const sd=addDays(today,-92);
+    for(let i=0;i<600;i++){const d=addDays(sd,i);phaseMap[isoDate(d)]=phase(i%cl);}
   }else{
     // Build a list of cycle anchor points: each logged period start is an anchor.
     // Between anchors (and after the last one), tile forward using the computed cycle length.
@@ -481,13 +481,15 @@ function buildMaps(){
 
     // Fill phaseMap day by day from the first period start to endDate
     const first=parseDate(sorted[0].start);
+    const threeMonthsAgo=addDays(today,-92);
+    const mapStart=first<threeMonthsAgo?first:threeMonthsAgo;
 
-    // Build a Set of anchor dates (period start dates) for quick lookup
-    const anchorDates=sorted.map(p=>p.start); // already sorted ISO strings
+    // Build anchor dates list (period start dates, sorted)
+    const anchorDates=sorted.map(p=>p.start);
 
     let cycleStart=first;
     let anchorIdx=0;
-    let d=new Date(first);
+    let d=new Date(mapStart);
 
     while(d<=endDate){
       const key=isoDate(d);
@@ -591,6 +593,50 @@ function renderCalendar(){
     <div class="stat"><div class="sv">${data.periods.length}</div><div class="sl">logged</div></div>`;
   const calDiv=document.getElementById('calendars');calDiv.innerHTML='';
   const dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+  // ── Past 3 months ──
+  const pastHeader=document.createElement('div');
+  pastHeader.style.cssText='font-size:12px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px';
+  pastHeader.textContent='Past';
+  calDiv.appendChild(pastHeader);
+
+  for(let mi=-3;mi<0;mi++){
+    const d=new Date(today.getFullYear(),today.getMonth()+mi,1);
+    const block=document.createElement('div');block.className='month-block';block.style.opacity='0.6';
+    const titleEl=document.createElement('div');titleEl.className='month-title';
+    titleEl.textContent=d.toLocaleDateString('en-US',{month:'long',year:'numeric'});block.appendChild(titleEl);
+    const headsEl=document.createElement('div');headsEl.className='cal-heads';
+    dayNames.forEach(h=>{const hd=document.createElement('div');hd.className='cal-head';hd.textContent=h;headsEl.appendChild(hd);});
+    block.appendChild(headsEl);
+    const grid=document.createElement('div');grid.className='cal-grid';
+    const firstDay=d.getDay();
+    for(let b=0;b<firstDay;b++){const e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
+    const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+    for(let day=1;day<=dim;day++){
+      const date=new Date(d.getFullYear(),d.getMonth(),day);
+      const key=isoDate(date),logged=!!loggedMap[key],phase=phaseMap[key];
+      const cell=document.createElement('div');cell.className='cal-day';
+      let bg,tc;
+      if(logged){bg='#ED93B1';tc='#72243E';}
+      else if(phase){bg=PHASE_BG[phase];tc=PHASE_TC[phase];}
+      else{bg='transparent';tc='inherit';}
+      cell.style.background=bg;
+      const span=document.createElement('span');span.style.color=tc;span.textContent=day;
+      cell.appendChild(span);cell.addEventListener('click',()=>dayTapped(key,cell));grid.appendChild(cell);
+    }
+    block.appendChild(grid);calDiv.appendChild(block);
+  }
+
+  // ── Divider ──
+  const divider=document.createElement('div');
+  divider.style.cssText='border-top:1px solid #e0e0e0;margin:0.5rem 0 1rem';
+  calDiv.appendChild(divider);
+  const upcomingHeader=document.createElement('div');
+  upcomingHeader.style.cssText='font-size:12px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px';
+  upcomingHeader.textContent='Upcoming';
+  calDiv.appendChild(upcomingHeader);
+
+  // ── Forward months ──
   for(let mi=0;mi<data.settings.months;mi++){
     const d=new Date(today.getFullYear(),today.getMonth()+mi,1);
     const block=document.createElement('div');block.className='month-block';
