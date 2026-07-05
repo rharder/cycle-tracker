@@ -594,15 +594,12 @@ function renderCalendar(){
   const calDiv=document.getElementById('calendars');calDiv.innerHTML='';
   const dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-  // ── Past 3 months ──
-  const pastHeader=document.createElement('div');
-  pastHeader.style.cssText='font-size:12px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px';
-  pastHeader.textContent='Past';
-  calDiv.appendChild(pastHeader);
-
+  // ── Past months (hidden until button tapped) ──
+  const pastWrap=document.createElement('div');
+  pastWrap.id='past-months';pastWrap.style.display='none';
   for(let mi=-3;mi<0;mi++){
     const d=new Date(today.getFullYear(),today.getMonth()+mi,1);
-    const block=document.createElement('div');block.className='month-block';block.style.opacity='0.6';
+    const block=document.createElement('div');block.className='month-block';block.style.opacity='0.65';
     const titleEl=document.createElement('div');titleEl.className='month-title';
     titleEl.textContent=d.toLocaleDateString('en-US',{month:'long',year:'numeric'});block.appendChild(titleEl);
     const headsEl=document.createElement('div');headsEl.className='cal-heads';
@@ -624,17 +621,28 @@ function renderCalendar(){
       const span=document.createElement('span');span.style.color=tc;span.textContent=day;
       cell.appendChild(span);cell.addEventListener('click',()=>dayTapped(key,cell));grid.appendChild(cell);
     }
-    block.appendChild(grid);calDiv.appendChild(block);
+    block.appendChild(grid);pastWrap.appendChild(block);
   }
+  calDiv.appendChild(pastWrap);
 
-  // ── Divider ──
-  const divider=document.createElement('div');
-  divider.style.cssText='border-top:1px solid #e0e0e0;margin:0.5rem 0 1rem';
-  calDiv.appendChild(divider);
-  const upcomingHeader=document.createElement('div');
-  upcomingHeader.style.cssText='font-size:12px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px';
-  upcomingHeader.textContent='Upcoming';
-  calDiv.appendChild(upcomingHeader);
+  // ── Show past button ──
+  const pastBtn=document.createElement('button');
+  pastBtn.id='past-btn';
+  pastBtn.style.cssText='width:100%;padding:11px;border-radius:10px;border:1px solid #ddd;background:transparent;font-size:14px;color:#888;cursor:pointer;margin-bottom:1rem;-webkit-tap-highlight-color:transparent';
+  pastBtn.textContent='Show previous 3 months';
+  pastBtn.onclick=()=>{
+    const pw=document.getElementById('past-months');
+    const pb=document.getElementById('past-btn');
+    if(pw.style.display==='none'){
+      pw.style.display='';
+      pb.textContent='Hide previous months';
+      pw.scrollIntoView({behavior:'smooth',block:'start'});
+    }else{
+      pw.style.display='none';
+      pb.textContent='Show previous 3 months';
+    }
+  };
+  calDiv.insertBefore(pastBtn, pastWrap);
 
   // ── Forward months ──
   for(let mi=0;mi<data.settings.months;mi++){
