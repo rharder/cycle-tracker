@@ -459,63 +459,94 @@ function buildMaps(){
   const{len:cl}=computeCycleLen();
   const{periodLen,ovWin}=data.settings;
   const ovDay=cl-14,ovStart=ovDay-1,ovEnd=ovDay+Math.floor(ovWin/2);
-  function phase(d){
-    if(d<periodLen)return'menstrual';
-    if(d<ovStart)return'follicular';
-    if(d<=ovEnd)return'ovulation';
-    return'luteal';
-  }
   const phaseMap={},loggedMap={};
   const endDate=addDays(today,(data.settings.months+1)*32);
 
   if(sorted.length===0){
     // No data: tile from 3 months back using default cycle length
+    function phase0(d){
+      if(d<periodLen)return'menstrual';
+      if(d<ovStart)return'follicular';
+      if(d<=ovEnd)return'ovulation';
+      return'luteal';
+    }
     const sd=addDays(today,-92);
-    for(let i=0;i<600;i++){const d=addDays(sd,i);phaseMap[isoDate(d)]=phase(i%cl);}
+    for(let i=0;i<600;i++){const d=addDays(sd,i);phaseMap[isoDate(d)]=phase0(i%cl);}
   }else{
-    // Build a list of cycle anchor points: each logged period start is an anchor.
-    // Between anchors (and after the last one), tile forward using the computed cycle length.
-    // This means the phase resets to day-0 at every logged period start, so predictions
-    // after the most recent period are always relative to that period — not drifted from
-    // the very first one.
+    // ── Logged periods are truth data ──
+    // Build loggedMap first so we know exactly which days are confirmed period days.
+    for(const p of sorted){
+      const sd=parseDate(p.start);
+      const ed=p.end?parseDate(p.end):addDays(sd,periodLen-1);
+      for(let dd=new Date(sd);dd<=ed;dd=addDays(dd,1))loggedMap[isoDate(dd)]=p.id;
+    }
 
-    // Anchor list: every logged period start date, sorted ascending
-    const anchorDates=sorted.map(p=>p.start);
-    const first=parseDate(anchorDates[0]);
+    // Build anchors: one per logged period.
+    // Each anchor captures the actual period length from logged data so the
+    // phase model uses that — not the settings default — when determining
+    // when follicular begins after this period.
+    const anchors=sorted.map(p=>{
+      const sd=parseDate(p.start);
+      const ed=p.end?parseDate(p.end):addDays(sd,periodLen-1);
+      const actualLen=daysBetween(sd,ed)+1;
+      return{cycleStart:sd, follicularStart:addDays(ed,1), actualLen};
+    });
+
+    const first=anchors[0].cycleStart;
     const threeMonthsAgo=addDays(today,-92);
     const mapStart=first<threeMonthsAgo?first:threeMonthsAgo;
 
-    // Walk day by day from mapStart to endDate.
-    // cycleStart begins at first (the earliest anchor). Days before first are
-    // back-tiled from first so dayInCycle is always >= 0.
-    // Each time we reach a logged period start we re-anchor to that date.
-    let cycleStart=first;
     let anchorIdx=0;
     let d=new Date(mapStart);
 
     while(d<=endDate){
       const key=isoDate(d);
 
-      // Re-anchor when we step onto a new logged period start
-      if(anchorIdx+1<anchorDates.length && key===anchorDates[anchorIdx+1]){
+      // Advance anchor when we reach the next logged period start
+      if(anchorIdx+1<anchors.length && key===isoDate(anchors[anchorIdx+1].cycleStart)){
         anchorIdx++;
-        cycleStart=parseDate(anchorDates[anchorIdx]);
       }
 
-      // daysBetween can be negative for days before the first period.
-      // Use Math.abs so those days back-tile symmetrically (cosmetic only —
-      // they're in the past and mostly just need a color).
-      const rawDay=daysBetween(cycleStart,d);
-      const dayInCycle=((rawDay%cl)+cl)%cl; // always positive modulo
-      phaseMap[key]=phase(dayInCycle);
+      const anchor=anchors[anchorIdx];
+
+      if(loggedMap[key]){
+        // Logged days are always menstrual — truth data
+        phaseMap[key]='menstrual';
+      } else if(d>=anchor.follicularStart){
+        // Past the logged period end — logged end date is truth, so
+        // phase model picks up from here regardless of what cycleDay says.
+        const rawDay=daysBetween(anchor.follicularStart,d);
+        const dayInFollicular=((rawDay%cl)+cl)%cl;
+        // Remaining cycle length after actual period
+        const remaining=cl-anchor.actualLen;
+        const adjOvStart=ovStart-anchor.actualLen;
+        const adjOvEnd=ovEnd-anchor.actualLen;
+        if(dayInFollicular<0){
+          phaseMap[key]='follicular';
+        } else if(dayInFollicular<Math.max(0,adjOvStart)){
+          phaseMap[key]='follicular';
+        } else if(dayInFollicular<=Math.max(0,adjOvEnd)){
+          phaseMap[key]='ovulation';
+        } else if(dayInFollicular<remaining){
+          phaseMap[key]='luteal';
+        } else {
+          phaseMap[key]='menstrual'; // predicted next period
+        }
+      } else {
+        const rawDay=daysBetween(anchor.cycleStart,d);
+        const dayInCycle=((rawDay%cl)+cl)%cl;
+        if(dayInCycle<anchor.actualLen){
+          phaseMap[key]='menstrual';
+        } else if(dayInCycle<ovStart){
+          phaseMap[key]='follicular';
+        } else if(dayInCycle<=ovEnd){
+          phaseMap[key]='ovulation';
+        } else {
+          phaseMap[key]='luteal';
+        }
+      }
 
       d=addDays(d,1);
-    }
-
-    // Build loggedMap from actual period entries
-    for(const p of sorted){
-      const sd=parseDate(p.start),ed=p.end?parseDate(p.end):addDays(sd,periodLen-1);
-      for(let dd=new Date(sd);dd<=ed;dd=addDays(dd,1))loggedMap[isoDate(dd)]=p.id;
     }
   }
   return{phaseMap,loggedMap,cl};
