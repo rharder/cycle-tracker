@@ -479,14 +479,16 @@ function buildMaps(){
     // after the most recent period are always relative to that period — not drifted from
     // the very first one.
 
-    // Fill phaseMap day by day from the first period start to endDate
-    const first=parseDate(sorted[0].start);
+    // Anchor list: every logged period start date, sorted ascending
+    const anchorDates=sorted.map(p=>p.start);
+    const first=parseDate(anchorDates[0]);
     const threeMonthsAgo=addDays(today,-92);
     const mapStart=first<threeMonthsAgo?first:threeMonthsAgo;
 
-    // Build anchor dates list (period start dates, sorted)
-    const anchorDates=sorted.map(p=>p.start);
-
+    // Walk day by day from mapStart to endDate.
+    // cycleStart begins at first (the earliest anchor). Days before first are
+    // back-tiled from first so dayInCycle is always >= 0.
+    // Each time we reach a logged period start we re-anchor to that date.
     let cycleStart=first;
     let anchorIdx=0;
     let d=new Date(mapStart);
@@ -494,16 +496,18 @@ function buildMaps(){
     while(d<=endDate){
       const key=isoDate(d);
 
-      // If this date is a logged period start (and not the very first anchor we're already on),
-      // re-anchor the cycle here
+      // Re-anchor when we step onto a new logged period start
       if(anchorIdx+1<anchorDates.length && key===anchorDates[anchorIdx+1]){
         anchorIdx++;
         cycleStart=parseDate(anchorDates[anchorIdx]);
       }
 
-      const dayInCycle=daysBetween(cycleStart,d);
-      // Use modulo so we keep tiling forward after the last anchor
-      phaseMap[key]=phase(dayInCycle%cl);
+      // daysBetween can be negative for days before the first period.
+      // Use Math.abs so those days back-tile symmetrically (cosmetic only —
+      // they're in the past and mostly just need a color).
+      const rawDay=daysBetween(cycleStart,d);
+      const dayInCycle=((rawDay%cl)+cl)%cl; // always positive modulo
+      phaseMap[key]=phase(dayInCycle);
 
       d=addDays(d,1);
     }
